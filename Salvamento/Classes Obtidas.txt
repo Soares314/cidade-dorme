@@ -1,0 +1,2 @@
+res://Classe/aldeão.tscn
+res://Classe/lobisomem.tscn

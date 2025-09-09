@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bwnm14kx5eyvw"]
+
+[ext_resource type="PackedScene" uid="uid://cjdtm52rd7bj3" path="res://Classe/Ações/button.tscn" id="1_0w4kl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yy7us"]
+bg_color = Color(0.707097, 0.219218, 0.134542, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+
+[node name="Matar Jogador" instance=ExtResource("1_0w4kl")]
+theme_override_styles/normal = SubResource("StyleBoxFlat_yy7us")
+text = "Mate um jogador"

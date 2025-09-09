@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://c66n882w4ncwa"]
+
+[ext_resource type="Script" uid="uid://hpkfde07ocfh" path="res://Classes Obtidas Tela/ClassesObtidasPopup.cs" id="1_eixa3"]
+[ext_resource type="PackedScene" uid="uid://jofu8hwfqg3o" path="res://Classes Obtidas Tela/classes_obtidas.tscn" id="1_wubo7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eixa3"]
+bg_color = Color(0.544911, 0.293439, 9.62615e-08, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5p4th"]
+
+[node name="Classes Obtidas Popup" type="PopupPanel"]
+size = Vector2i(400, 400)
+visible = true
+theme_override_styles/panel = SubResource("StyleBoxFlat_eixa3")
+script = ExtResource("1_eixa3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_right = 400.0
+offset_bottom = 400.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_5p4th")
+text = "Escolha qual classse adicionar ao jogo"
+horizontal_alignment = 1
+
+[node name="Classes Obtidas" parent="VBoxContainer" instance=ExtResource("1_wubo7")]
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 2

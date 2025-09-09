@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjdtm52rd7bj3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_em67s"]
+bg_color = Color(0.65889, 0.500509, 0.372052, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+
+[node name="Passar Turno" type="Button"]
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_em67s")
+text = "Passe o turno."
