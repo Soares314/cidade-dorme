@@ -2,16 +2,21 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 public class Jogador
 {
     public string NomeJogador;
-    public Node ClasseJogador;
+    public Aldeão ClasseJogador;
 
-    public Jogador(string nome, Node classe)
+    public Jogador(string nome, Aldeão classe)
     {
         NomeJogador = nome;
         ClasseJogador = classe;
+        if (ClasseJogador != null)
+        {
+            ClasseJogador.JogadorUsuario = this;
+        }
     }
 }
 
@@ -21,25 +26,102 @@ public partial class MontadorJogo : ScrollContainer
     private HBoxContainer EspaçoAdicionarJogador;
     private TabContainer TabsClasse;
     private TabContainer ClasDisponiveis;
+    private Button BotaoMontarJogo;
     private PackedScene CenaEscolhaClasse = GD.Load<PackedScene>("res://Classes Obtidas Tela/classes_obtidas_popup.tscn");
     public List<Jogador> Jogadores = new List<Jogador>();
     public List<Dictionary<PackedScene, int>> Classes = new List<Dictionary<PackedScene, int>>();
+    bool BotaoMontarEstaConectado = false;
 
     public override void _Ready()
     {
         EspaçoAdicionarJogador = GetNode<HBoxContainer>("Abas/Aba Adicionar Jogador");
         TabsClasse = GetNode<TabContainer>("Abas/Aba Classes Possiveis");
         ClasDisponiveis = GetNode<TabContainer>("Abas/Aba Classes Possiveis");
+        BotaoMontarJogo = GetNode<Button>("Abas/Montar Jogo");
 
         foreach (GridContainer claLinha in ClasDisponiveis.GetChildren())
         {
-            Classes.Add(new Dictionary< PackedScene, int>());
+            Classes.Add(new Dictionary<PackedScene, int>());
         }
 
         foreach (Node classeTab in TabsClasse.GetChildren())
         {
             TextureButton botaoAdicionaClasse = classeTab.GetChild(0) as TextureButton;
             botaoAdicionaClasse.Pressed += () => OnBotãoAdicionarClassePressed(botaoAdicionaClasse);
+        }
+    }
+
+    public void AtribuaClasseAleatoriaParaCadaJogador()
+    {
+        int quanClasseClaTotal = 0;
+        foreach (Dictionary<PackedScene, int> cla in Classes)
+        {
+            foreach (KeyValuePair<PackedScene, int> classeNoCla in cla)
+            {
+                quanClasseClaTotal += classeNoCla.Value;
+            }
+        }
+
+        int quanClasseClaAux = 0;
+        Dictionary<PackedScene, int> classesDoCla;
+        while (quanClasseClaTotal > 0 && Jogadores.Any(i => i.ClasseJogador == null))
+        {
+            while (true)
+            {
+                int numClaAlea = -1;
+                if (Classes.Count > 0)
+                    numClaAlea = (int)(GD.Randi() % Classes.Count);
+                GD.Print($"Quantidade DE Clãs: {Jogadores.Count}, Numero aleatorio do Clã: {numClaAlea}");
+                if (Classes[numClaAlea].Count != 0)
+                {
+                    classesDoCla = Classes[numClaAlea];
+                    break;
+                }
+            }
+
+            int quanClasseCla = 0;
+            foreach (KeyValuePair<PackedScene, int> classeNoCla in classesDoCla)
+            {
+                quanClasseCla += classeNoCla.Value;
+            }
+
+            int numClasseAlea = (int)(GD.Randi() % quanClasseCla) + 1;
+            GD.Print($"Quantidade classes no cla: {quanClasseCla}, Numero aleatorio da classe: {numClasseAlea}");
+
+            foreach (KeyValuePair<PackedScene, int> classeNoCla in classesDoCla)
+            {
+                quanClasseClaAux += classeNoCla.Value;
+                if (numClasseAlea <= quanClasseClaAux)
+                {
+                    classesDoCla[classeNoCla.Key] = classeNoCla.Value - 1;
+                    quanClasseClaTotal--;
+                    quanClasseCla--;
+                    if (classeNoCla.Value == 0)
+                        classesDoCla.Remove(classeNoCla.Key);
+
+                    Aldeão novaClasseInstanciada = classeNoCla.Key.Instantiate<Aldeão>();
+                    novaClasseInstanciada.ClaClasse = ClasDisponiveis.GetChild(Classes.IndexOf(classesDoCla)).Name;
+
+                    while (true)
+                    {
+                        int numJogadorAlea = (int)(GD.Randi() % Jogadores.Count);
+                        GD.Print($"Quantidade DE jogadores: {Jogadores.Count}, Numero aleatorio do jogador: {numJogadorAlea}\n");
+                        if (Jogadores[numJogadorAlea].ClasseJogador == null)
+                        {
+                            Jogadores[numJogadorAlea].ClasseJogador = novaClasseInstanciada;
+                            break;
+                        }
+                    }
+
+                    quanClasseClaAux = 0;
+                    break;
+                }
+            }
+        }
+
+        foreach (Jogador jogador in Jogadores)
+        {
+            GD.Print($"Jogador: {jogador.NomeJogador}, Classe:{jogador.ClasseJogador.Name}, Clã: {jogador.ClasseJogador.ClaClasse}");
         }
     }
 
@@ -101,7 +183,7 @@ public partial class MontadorJogo : ScrollContainer
         quantidadeUmaClasse.Alignment = HorizontalAlignment.Center;
         quantidadeUmaClasse.MinValue = 0;
         quantidadeUmaClasse.MaxValue = 99;
-        quantidadeUmaClasse.Value = 1;
+        quantidadeUmaClasse.Value = 0;
         quantidadeUmaClasse.Step = 1;
         quantidadeUmaClasse.CustomMinimumSize = new Vector2(60, 30);
         quantidadeUmaClasse.SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter;
@@ -131,8 +213,28 @@ public partial class MontadorJogo : ScrollContainer
         claDaClasse[classe] = (int)value;
     }
 
+    public override void _Process(double delta)
+    {
+        bool podeMontar = Jogadores.Count > 0 && Classes.Any(clasDaClasse => clasDaClasse.Count != 0) && Jogadores.Count <= Classes.Count;
+        if (podeMontar && !BotaoMontarEstaConectado)
+        {
+            BotaoMontarEstaConectado = true;
+            BotaoMontarJogo.ButtonUp += OnMontarJogoPressed;
+            BotaoMontarJogo.AddThemeStyleboxOverride("normal", GD.Load<StyleBox>("res://Resources/StyleBoxes/ClicavelEstilizado.tres"));
+        }
+        else
+            if (!podeMontar && BotaoMontarEstaConectado)
+            {
+                BotaoMontarEstaConectado = false;
+                BotaoMontarJogo.ButtonUp -= OnMontarJogoPressed;
+                BotaoMontarJogo.RemoveThemeStyleboxOverride("normal");
+            }
+        
+    }
+
+
     private void OnMontarJogoPressed()
     {
-        //foreach(Dictionary<PackedScene, int> classesDoCla )
+        AtribuaClasseAleatoriaParaCadaJogador();
     }
 }

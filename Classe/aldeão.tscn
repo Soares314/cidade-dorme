@@ -118,8 +118,4 @@ theme_override_constants/margin_bottom = 5
 [node name="Passar Turno" parent="Carta Desvirada/Margem da Carta/Sumário da Carta/Descrição da Carta/Ações da Carta/Ação1" instance=ExtResource("5_mqbsc")]
 layout_mode = 2
 
-[node name="SpinBox" type="SpinBox" parent="."]
-offset_right = 86.5625
-offset_bottom = 31.0
-
 [connection signal="button_up" from="Carta Virada" to="." method="OnCartaViradaButtonUp"]
