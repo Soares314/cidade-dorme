@@ -20,12 +20,12 @@ public partial class Aldeão : Node
 		ClaNaCarta = GetNode<Label>("Carta Desvirada/Margem da Carta/Sumário da Carta/Clã da Carta");
 
 
-		foreach (Button Acao in AcoesClasse.GetChildren())
+		foreach (MarginContainer Acao in AcoesClasse.GetChildren())
 		{
 			if (Acao.GetChild(0) is Button)
 			{
 				Button acao = Acao.GetChild(0) as Button;
-				acao.ButtonUp += OnAcaoButtonUp;
+				acao.ButtonUp += () => OnAcaoButtonUp(acao);
 			}
 		}
 
@@ -67,14 +67,22 @@ public partial class Aldeão : Node
 
 	private void OnCartaViradaButtonUp()
 	{
-		CartaVirada.ProcessMode = ProcessModeEnum.Disabled;
+		CartaVirada.Visible = false;
+	}
+	private void PassarTurno()
+	{
+		(GetChild(0) as Control).Visible = false;
+		(GetChild(1) as Control).Visible = false;
 	}
 
-	private void OnAcaoButtonUp()
+	private void OnAcaoButtonUp(Button acaoApertada)
 	{
-		if (Owner.Name == "Passar Turno")
+		switch (acaoApertada.Name)
 		{
-			
+			case "Passar Turno":
+				PassarTurno();
+				break;
+
 		}
 	}
 }

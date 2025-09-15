@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://barrjfrtp53h8"]
+[gd_scene load_steps=3 format=3 uid="uid://barrjfrtp53h8"]
 
 [ext_resource type="Texture2D" uid="uid://dweqdkxoeqdy1" path="res://Sprites/background_game.jpg" id="1_6jfvx"]
+[ext_resource type="Script" uid="uid://b4c34fsswvu6g" path="res://Jogo/Jogo.cs" id="2_wy8yi"]
 
 [node name="Jogo" type="TextureRect"]
 anchors_preset = 15
@@ -9,3 +10,4 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_6jfvx")
+script = ExtResource("2_wy8yi")

@@ -13,10 +13,6 @@ public class Jogador
     {
         NomeJogador = nome;
         ClasseJogador = classe;
-        if (ClasseJogador != null)
-        {
-            ClasseJogador.JogadorUsuario = this;
-        }
     }
 }
 
@@ -28,6 +24,7 @@ public partial class MontadorJogo : ScrollContainer
     private TabContainer ClasDisponiveis;
     private Button BotaoMontarJogo;
     private PackedScene CenaEscolhaClasse = GD.Load<PackedScene>("res://Classes Obtidas Tela/classes_obtidas_popup.tscn");
+    public PackedScene JogoVaiMontar = GD.Load<PackedScene>("res://Jogo/jogo.tscn");
     public List<Jogador> Jogadores = new List<Jogador>();
     public List<Dictionary<PackedScene, int>> Classes = new List<Dictionary<PackedScene, int>>();
     bool BotaoMontarEstaConectado = false;
@@ -51,31 +48,44 @@ public partial class MontadorJogo : ScrollContainer
         }
     }
 
-    public void AtribuaClasseAleatoriaParaCadaJogador()
+    public int QuantosElementosListaDicionario(List<Dictionary<PackedScene, int>> Lista)
     {
-        int quanClasseClaTotal = 0;
-        foreach (Dictionary<PackedScene, int> cla in Classes)
+        int QuantElementosDicionario = 0;
+        foreach (Dictionary<PackedScene, int> cla in Lista)
         {
             foreach (KeyValuePair<PackedScene, int> classeNoCla in cla)
             {
-                quanClasseClaTotal += classeNoCla.Value;
+                QuantElementosDicionario += classeNoCla.Value;
             }
         }
 
+        return QuantElementosDicionario;
+    }
+
+    public void AtribuaClasseAleatoriaParaCadaJogador()
+    {
+        int quanClasseClaTotal = QuantosElementosListaDicionario(Classes);
         int quanClasseClaAux = 0;
         Dictionary<PackedScene, int> classesDoCla;
+
         while (quanClasseClaTotal > 0 && Jogadores.Any(i => i.ClasseJogador == null))
         {
             while (true)
             {
                 int numClaAlea = -1;
                 if (Classes.Count > 0)
-                    numClaAlea = (int)(GD.Randi() % Classes.Count);
-                GD.Print($"Quantidade DE Clãs: {Jogadores.Count}, Numero aleatorio do Clã: {numClaAlea}");
-                if (Classes[numClaAlea].Count != 0)
                 {
-                    classesDoCla = Classes[numClaAlea];
-                    break;
+                    numClaAlea = (int)(GD.Randi() % Classes.Count);
+                    GD.Print($"Numero aleatorio do Clã: {numClaAlea}, Tipos de Classes no clã: {Classes[numClaAlea].Count}");
+                    if (Classes[numClaAlea].Count > 0)
+                    {
+                        classesDoCla = Classes[numClaAlea];
+                        break;
+                    }
+                    else
+                    {
+                        Classes.RemoveAt(numClaAlea);
+                    }
                 }
             }
 
@@ -86,17 +96,18 @@ public partial class MontadorJogo : ScrollContainer
             }
 
             int numClasseAlea = (int)(GD.Randi() % quanClasseCla) + 1;
-            GD.Print($"Quantidade classes no cla: {quanClasseCla}, Numero aleatorio da classe: {numClasseAlea}");
+            GD.Print($"Quantidade Classes no cla: {quanClasseCla}, Numero aleatorio da classe: {numClasseAlea}");
 
             foreach (KeyValuePair<PackedScene, int> classeNoCla in classesDoCla)
             {
                 quanClasseClaAux += classeNoCla.Value;
                 if (numClasseAlea <= quanClasseClaAux)
                 {
-                    classesDoCla[classeNoCla.Key] = classeNoCla.Value - 1;
+                    classesDoCla[classeNoCla.Key] = classesDoCla[classeNoCla.Key] - 1;
                     quanClasseClaTotal--;
                     quanClasseCla--;
-                    if (classeNoCla.Value == 0)
+                    GD.Print($"Quantidade dessa classe no clã {classesDoCla[classeNoCla.Key]}");
+                    if (classesDoCla[classeNoCla.Key] == 0)
                         classesDoCla.Remove(classeNoCla.Key);
 
                     Aldeão novaClasseInstanciada = classeNoCla.Key.Instantiate<Aldeão>();
@@ -109,6 +120,7 @@ public partial class MontadorJogo : ScrollContainer
                         if (Jogadores[numJogadorAlea].ClasseJogador == null)
                         {
                             Jogadores[numJogadorAlea].ClasseJogador = novaClasseInstanciada;
+                            Jogadores[numJogadorAlea].ClasseJogador.JogadorUsuario = Jogadores[numJogadorAlea];
                             break;
                         }
                     }
@@ -215,7 +227,8 @@ public partial class MontadorJogo : ScrollContainer
 
     public override void _Process(double delta)
     {
-        bool podeMontar = Jogadores.Count > 0 && Classes.Any(clasDaClasse => clasDaClasse.Count != 0) && Jogadores.Count <= Classes.Count;
+        bool podeMontar = Jogadores.Count > 0 && Classes.Any(clasDaClasse => clasDaClasse.Count != 0) && Jogadores.Count <= QuantosElementosListaDicionario(Classes);
+        //GD.Print(podeMontar);
         if (podeMontar && !BotaoMontarEstaConectado)
         {
             BotaoMontarEstaConectado = true;
@@ -224,11 +237,11 @@ public partial class MontadorJogo : ScrollContainer
         }
         else
             if (!podeMontar && BotaoMontarEstaConectado)
-            {
-                BotaoMontarEstaConectado = false;
-                BotaoMontarJogo.ButtonUp -= OnMontarJogoPressed;
-                BotaoMontarJogo.RemoveThemeStyleboxOverride("normal");
-            }
+        {
+            BotaoMontarEstaConectado = false;
+            BotaoMontarJogo.ButtonUp -= OnMontarJogoPressed;
+            BotaoMontarJogo.RemoveThemeStyleboxOverride("normal");
+        }
         
     }
 
@@ -236,5 +249,16 @@ public partial class MontadorJogo : ScrollContainer
     private void OnMontarJogoPressed()
     {
         AtribuaClasseAleatoriaParaCadaJogador();
+
+        Node jogoaMontar = JogoVaiMontar.Instantiate<Node>();
+
+        foreach (Jogador jogador in Jogadores)
+        {
+            jogoaMontar.AddChild(jogador.ClasseJogador);
+        }
+        GetTree().Root.AddChild(jogoaMontar);
+        GetTree().CurrentScene.QueueFree();
+        GetTree().CurrentScene = jogoaMontar;
+        
     }
 }
