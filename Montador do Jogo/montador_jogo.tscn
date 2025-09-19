@@ -1,0 +1,98 @@
+[gd_scene load_steps=6 format=3 uid="uid://dktr2i67j0d5b"]
+
+[ext_resource type="Texture2D" uid="uid://cfpmkyddbgpbn" path="res://Sprites/add_player.png" id="1_6fyvv"]
+[ext_resource type="Script" uid="uid://meorca3brbym" path="res://Montador do Jogo/MontadorJogo.cs" id="1_xeky1"]
+[ext_resource type="StyleBox" uid="uid://b8i7ropgck7l4" path="res://Resources/StyleBoxes/aba_montador.tres" id="2_xeky1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fxiew"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u5pha"]
+bg_color = Color(1, 1, 1, 1)
+
+[node name="Montador Jogo" type="ScrollContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fxiew")
+script = ExtResource("1_xeky1")
+
+[node name="Abas" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="Aba Jogador" type="PanelContainer" parent="Abas"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_xeky1")
+
+[node name="Texto Aba Jogador" type="Label" parent="Abas/Aba Jogador"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "  Jogadores -"
+
+[node name="Aba Adicionar Jogador" type="HBoxContainer" parent="Abas"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Botão Adicionar Jogador" type="TextureButton" parent="Abas/Aba Adicionar Jogador"]
+layout_mode = 2
+texture_normal = ExtResource("1_6fyvv")
+
+[node name="Aba Classe" type="PanelContainer" parent="Abas"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_xeky1")
+
+[node name="Texto Aba Classe" type="Label" parent="Abas/Aba Classe"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = " Classes -"
+
+[node name="Aba Classes Possiveis" type="TabContainer" parent="Abas"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/panel = SubResource("StyleBoxFlat_u5pha")
+current_tab = 0
+
+[node name="Clã do Vilarejo" type="GridContainer" parent="Abas/Aba Classes Possiveis"]
+layout_mode = 2
+columns = 7
+metadata/_tab_index = 0
+
+[node name="Botão Adicionar Classe" type="TextureButton" parent="Abas/Aba Classes Possiveis/Clã do Vilarejo"]
+layout_mode = 2
+texture_normal = ExtResource("1_6fyvv")
+
+[node name="Clã dos Lobisomens" type="GridContainer" parent="Abas/Aba Classes Possiveis"]
+visible = false
+layout_mode = 2
+columns = 7
+metadata/_tab_index = 1
+
+[node name="Botão Adicionar Classe2" type="TextureButton" parent="Abas/Aba Classes Possiveis/Clã dos Lobisomens"]
+layout_mode = 2
+texture_normal = ExtResource("1_6fyvv")
+
+[node name="Aleatorio" type="GridContainer" parent="Abas/Aba Classes Possiveis"]
+visible = false
+layout_mode = 2
+columns = 7
+metadata/_tab_index = 2
+
+[node name="Botão Adicionar Classe3" type="TextureButton" parent="Abas/Aba Classes Possiveis/Aleatorio"]
+layout_mode = 2
+texture_normal = ExtResource("1_6fyvv")
+
+[node name="Montar Jogo" type="Button" parent="Abas"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 10
+theme_override_font_sizes/font_size = 20
+text = "Montar Novo Jogo"
+
+[connection signal="pressed" from="Abas/Aba Adicionar Jogador/Botão Adicionar Jogador" to="." method="OnBotãoAdicionarJogadorPressed"]

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcgvahdj8e7yg"]
+
+[ext_resource type="Texture2D" uid="uid://cfpmkyddbgpbn" path="res://Sprites/add_player.png" id="1_25ijb"]
+
+[node name="Botão Adicionar Classe" type="TextureButton"]
+visible = false
+texture_normal = ExtResource("1_25ijb")

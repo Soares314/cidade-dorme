@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://jofu8hwfqg3o"]
+
+[ext_resource type="Script" uid="uid://cj6glum6a5i4x" path="res://Classes Obtidas Tela/ClassesObtidas.cs" id="1_apsgf"]
+[ext_resource type="StyleBox" uid="uid://u1qi2putldph" path="res://Resources/StyleBoxes/BotaoClasseStyle.tres" id="2_ehaks"]
+[ext_resource type="Texture2D" uid="uid://dossnmaitlyuo" path="res://Classe/Icones/peasant_icon.png" id="3_oun24"]
+
+[node name="Classes Obtidas" type="GridContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+columns = 10
+script = ExtResource("1_apsgf")
+
+[node name="Margem da Lista" type="MarginContainer" parent="."]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Botão Adicionar Classe Esp" type="Button" parent="Margem da Lista"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_ehaks")
+
+[node name="TextureRect" type="TextureRect" parent="Margem da Lista/Botão Adicionar Classe Esp"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 7.0
+offset_right = 80.0
+offset_bottom = 70.0
+texture = ExtResource("3_oun24")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Margem da Lista/Botão Adicionar Classe Esp"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 71.0
+offset_right = 77.0
+offset_bottom = 120.0
+text = "Aldeão
+"

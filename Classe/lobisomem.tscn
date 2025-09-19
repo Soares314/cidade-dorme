@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://nwduaxcm5tft"]
+
+[ext_resource type="PackedScene" uid="uid://ck3ajbu3l555y" path="res://Classe/aldeão.tscn" id="1_17eru"]
+[ext_resource type="Texture2D" uid="uid://bttldscgua5yw" path="res://Classe/Icones/werewolf_icon.png" id="2_3ndwm"]
+[ext_resource type="Texture2D" uid="uid://cdwxvd2mkobxc" path="res://Sprites/werewolf.jpg" id="2_v6o2g"]
+[ext_resource type="PackedScene" uid="uid://bwnm14kx5eyvw" path="res://Classe/Ações/matar_jogador.tscn" id="3_3ndwm"]
+
+[node name="Lobisomem" instance=ExtResource("1_17eru")]
+IconeClasse = ExtResource("2_3ndwm")
+DescricaoClasse = "Uma vez, durante à noite, você pode escolher matar qualquer outro jogador."
+
+[node name="Nome da Carta" parent="Carta Desvirada/Margem da Carta/Sumário da Carta" index="0"]
+text = " Lobisomem"
+
+[node name="Imagem da Carta" parent="Carta Desvirada/Margem da Carta/Sumário da Carta" index="1"]
+texture = ExtResource("2_v6o2g")
+expand_mode = 5
+stretch_mode = 0
+
+[node name="Clã da Carta" parent="Carta Desvirada/Margem da Carta/Sumário da Carta" index="2"]
+text = "  Clã dos Lobismomens"
+
+[node name="Ação2" type="MarginContainer" parent="Carta Desvirada/Margem da Carta/Sumário da Carta/Descrição da Carta/Ações da Carta" index="0"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Matar Jogador" parent="Carta Desvirada/Margem da Carta/Sumário da Carta/Descrição da Carta/Ações da Carta/Ação2" index="0" instance=ExtResource("3_3ndwm")]
+layout_mode = 2

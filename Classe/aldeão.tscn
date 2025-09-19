@@ -1,0 +1,122 @@
+[gd_scene load_steps=9 format=3 uid="uid://ck3ajbu3l555y"]
+
+[ext_resource type="Script" uid="uid://1kcrn52qcvie" path="res://Classe/Aldeão.cs" id="1_rag00"]
+[ext_resource type="Texture2D" uid="uid://cjoeghf0cqi52" path="res://Sprites/result_facedown_card.png" id="2_oa2t8"]
+[ext_resource type="StyleBox" uid="uid://bd8vaqn7dim1w" path="res://Resources/StyleBoxes/aldeão.tres" id="3_5dxhn"]
+[ext_resource type="Texture2D" uid="uid://di06yfcp4v5kd" path="res://Sprites/peasant.jpg" id="3_hify5"]
+[ext_resource type="PackedScene" uid="uid://cjdtm52rd7bj3" path="res://Classe/Ações/button.tscn" id="5_mqbsc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5dxhn"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mqbsc"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3i8d6"]
+bg_color = Color(0.952941, 0.901961, 0.862745, 1)
+border_width_left = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="Aldeão" type="Node"]
+script = ExtResource("1_rag00")
+
+[node name="Carta Desvirada" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -202.0
+offset_top = -281.0
+offset_right = 202.0
+offset_bottom = 284.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_5dxhn")
+
+[node name="Margem da Carta" type="MarginContainer" parent="Carta Desvirada"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Fundo da Carta" type="PanelContainer" parent="Carta Desvirada/Margem da Carta"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mqbsc")
+
+[node name="Sumário da Carta" type="VBoxContainer" parent="Carta Desvirada/Margem da Carta"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Nome da Carta" type="Label" parent="Carta Desvirada/Margem da Carta/Sumário da Carta"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = ExtResource("3_5dxhn")
+text = " Aldeão"
+
+[node name="Imagem da Carta" type="TextureRect" parent="Carta Desvirada/Margem da Carta/Sumário da Carta"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+texture = ExtResource("3_hify5")
+expand_mode = 3
+stretch_mode = 6
+
+[node name="Clã da Carta" type="Label" parent="Carta Desvirada/Margem da Carta/Sumário da Carta"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("3_5dxhn")
+text = "  Clã do Vilarejo"
+
+[node name="Descrição da Carta" type="PanelContainer" parent="Carta Desvirada/Margem da Carta/Sumário da Carta"]
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3i8d6")
+
+[node name="Ações da Carta" type="VBoxContainer" parent="Carta Desvirada/Margem da Carta/Sumário da Carta/Descrição da Carta"]
+layout_mode = 2
+
+[node name="Ação1" type="MarginContainer" parent="Carta Desvirada/Margem da Carta/Sumário da Carta/Descrição da Carta/Ações da Carta"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Passar Turno" parent="Carta Desvirada/Margem da Carta/Sumário da Carta/Descrição da Carta/Ações da Carta/Ação1" instance=ExtResource("5_mqbsc")]
+layout_mode = 2
+
+[node name="Carta Virada" type="TextureButton" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -203.5
+offset_top = -283.0
+offset_right = 203.5
+offset_bottom = 283.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("2_oa2t8")
+
+[connection signal="button_up" from="Carta Virada" to="." method="OnCartaViradaButtonUp"]
