@@ -25,7 +25,8 @@ public partial class MontadorJogo : ScrollContainer
     private Button BotaoMontarJogo;
     private PackedScene CenaEscolhaClasse = GD.Load<PackedScene>("res://Classes Obtidas Tela/classes_obtidas_popup.tscn");
     public PackedScene JogoVaiMontar = GD.Load<PackedScene>("res://Jogo/jogo.tscn");
-    public List<Jogador> Jogadores = new List<Jogador>();
+    private List<Jogador> Jogadores = new List<Jogador>();
+    public List<Jogador> JogadoresMortos = new List<Jogador>();
     public List<Dictionary<PackedScene, int>> Classes = new List<Dictionary<PackedScene, int>>();
     bool BotaoMontarEstaConectado = false;
 
@@ -60,81 +61,6 @@ public partial class MontadorJogo : ScrollContainer
         }
 
         return QuantElementosDicionario;
-    }
-
-    public void AtribuaClasseAleatoriaParaCadaJogador()
-    {
-        int quanClasseClaTotal = QuantosElementosListaDicionario(Classes);
-        int quanClasseClaAux = 0;
-        Dictionary<PackedScene, int> classesDoCla;
-
-        while (quanClasseClaTotal > 0 && Jogadores.Any(i => i.ClasseJogador == null))
-        {
-            while (true)
-            {
-                int numClaAlea = -1;
-                if (Classes.Count > 0)
-                {
-                    numClaAlea = (int)(GD.Randi() % Classes.Count);
-                    GD.Print($"Numero aleatorio do Clã: {numClaAlea}, Tipos de Classes no clã: {Classes[numClaAlea].Count}");
-                    if (Classes[numClaAlea].Count > 0)
-                    {
-                        classesDoCla = Classes[numClaAlea];
-                        break;
-                    }
-                    else
-                    {
-                        Classes.RemoveAt(numClaAlea);
-                    }
-                }
-            }
-
-            int quanClasseCla = 0;
-            foreach (KeyValuePair<PackedScene, int> classeNoCla in classesDoCla)
-            {
-                quanClasseCla += classeNoCla.Value;
-            }
-
-            int numClasseAlea = (int)(GD.Randi() % quanClasseCla) + 1;
-            GD.Print($"Quantidade Classes no cla: {quanClasseCla}, Numero aleatorio da classe: {numClasseAlea}");
-
-            foreach (KeyValuePair<PackedScene, int> classeNoCla in classesDoCla)
-            {
-                quanClasseClaAux += classeNoCla.Value;
-                if (numClasseAlea <= quanClasseClaAux)
-                {
-                    classesDoCla[classeNoCla.Key] = classesDoCla[classeNoCla.Key] - 1;
-                    quanClasseClaTotal--;
-                    quanClasseCla--;
-                    GD.Print($"Quantidade dessa classe no clã {classesDoCla[classeNoCla.Key]}");
-                    if (classesDoCla[classeNoCla.Key] == 0)
-                        classesDoCla.Remove(classeNoCla.Key);
-
-                    Aldeão novaClasseInstanciada = classeNoCla.Key.Instantiate<Aldeão>();
-                    novaClasseInstanciada.ClaClasse = ClasDisponiveis.GetChild(Classes.IndexOf(classesDoCla)).Name;
-
-                    while (true)
-                    {
-                        int numJogadorAlea = (int)(GD.Randi() % Jogadores.Count);
-                        GD.Print($"Quantidade DE jogadores: {Jogadores.Count}, Numero aleatorio do jogador: {numJogadorAlea}\n");
-                        if (Jogadores[numJogadorAlea].ClasseJogador == null)
-                        {
-                            Jogadores[numJogadorAlea].ClasseJogador = novaClasseInstanciada;
-                            Jogadores[numJogadorAlea].ClasseJogador.JogadorUsuario = Jogadores[numJogadorAlea];
-                            break;
-                        }
-                    }
-
-                    quanClasseClaAux = 0;
-                    break;
-                }
-            }
-        }
-
-        foreach (Jogador jogador in Jogadores)
-        {
-            GD.Print($"Jogador: {jogador.NomeJogador}, Classe:{jogador.ClasseJogador.Name}, Clã: {jogador.ClasseJogador.ClaClasse}");
-        }
     }
 
     private void OnBotãoAdicionarJogadorPressed()
@@ -245,20 +171,95 @@ public partial class MontadorJogo : ScrollContainer
         
     }
 
+    public void AtribuaClasseAleatoriaParaCadaJogador()
+    {
+        int quanClasseClaTotal = QuantosElementosListaDicionario(Classes);
+        int quanClasseClaAux = 0;
+        Dictionary<PackedScene, int> classesDoCla;
+
+        while (quanClasseClaTotal > 0 && Jogadores.Any(i => i.ClasseJogador == null))
+        {
+            while (true)
+            {
+                int numClaAlea = -1;
+                if (Classes.Count > 0)
+                {
+                    numClaAlea = (int)(GD.Randi() % Classes.Count);
+                    //GD.Print($"Numero aleatorio do Clã: {numClaAlea}, Tipos de Classes no clã: {Classes[numClaAlea].Count}");
+                    if (Classes[numClaAlea].Count > 0)
+                    {
+                        classesDoCla = Classes[numClaAlea];
+                        break;
+                    }
+                    else
+                    {
+                        Classes.RemoveAt(numClaAlea);
+                    }
+                }
+            }
+
+            int quanClasseCla = 0;
+            foreach (KeyValuePair<PackedScene, int> classeNoCla in classesDoCla)
+            {
+                quanClasseCla += classeNoCla.Value;
+            }
+
+            int numClasseAlea = (int)(GD.Randi() % quanClasseCla) + 1;
+            //GD.Print($"Quantidade Classes no cla: {quanClasseCla}, Numero aleatorio da classe: {numClasseAlea}");
+
+            foreach (KeyValuePair<PackedScene, int> classeNoCla in classesDoCla)
+            {
+                quanClasseClaAux += classeNoCla.Value;
+                if (numClasseAlea <= quanClasseClaAux)
+                {
+                    classesDoCla[classeNoCla.Key] = classesDoCla[classeNoCla.Key] - 1;
+                    quanClasseClaTotal--;
+                    quanClasseCla--;
+                    //GD.Print($"Quantidade dessa classe no clã {classesDoCla[classeNoCla.Key]}");
+                    if (classesDoCla[classeNoCla.Key] == 0)
+                        classesDoCla.Remove(classeNoCla.Key);
+
+                    Aldeão novaClasseInstanciada = classeNoCla.Key.Instantiate<Aldeão>();
+                    novaClasseInstanciada.ClaClasse = ClasDisponiveis.GetChild(Classes.IndexOf(classesDoCla)).Name;
+
+                    while (true)
+                    {
+                        int numJogadorAlea = (int)(GD.Randi() % Jogadores.Count);
+                        //GD.Print($"Quantidade DE jogadores: {Jogadores.Count}, Numero aleatorio do jogador: {numJogadorAlea}\n");
+                        if (Jogadores[numJogadorAlea].ClasseJogador == null)
+                        {
+                            Jogadores[numJogadorAlea].ClasseJogador = novaClasseInstanciada;
+                            Jogadores[numJogadorAlea].ClasseJogador.JogadorUsuario = Jogadores[numJogadorAlea];
+                            break;
+                        }
+                    }
+
+                    quanClasseClaAux = 0;
+                    break;
+                }
+            }
+        }
+
+        foreach (Jogador jogador in Jogadores)
+        {
+            //GD.Print($"Jogador: {jogador.NomeJogador}, Classe:{jogador.ClasseJogador.Name}, Clã: {jogador.ClasseJogador.ClaClasse}");
+        }
+    }
 
     private void OnMontarJogoPressed()
     {
         AtribuaClasseAleatoriaParaCadaJogador();
 
-        Node jogoaMontar = JogoVaiMontar.Instantiate<Node>();
+        Jogo jogoaMontar = JogoVaiMontar.Instantiate<Jogo>();
 
         foreach (Jogador jogador in Jogadores)
         {
+            jogoaMontar.Jogadores.Add(jogador);
             jogoaMontar.AddChild(jogador.ClasseJogador);
         }
         GetTree().Root.AddChild(jogoaMontar);
         GetTree().CurrentScene.QueueFree();
         GetTree().CurrentScene = jogoaMontar;
-        
+
     }
 }

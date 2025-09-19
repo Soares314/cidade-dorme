@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Aldeão : Node
 {
@@ -10,6 +11,9 @@ public partial class Aldeão : Node
 	public Jogador JogadorUsuario;
 	public string Classe;
 	public string ClaClasse;
+	public Jogo ControladorJogo;
+	public List<Jogador> JogadoresNoJogo;
+	public PackedScene CenaEscolhaJogador = GD.Load<PackedScene>("res://Jogadores no Jogo Popup/popup_jogadores_no_jogo.tscn");
 	private TextureButton CartaVirada;
 	private VBoxContainer AcoesClasse;
 	private Label ClaNaCarta;
@@ -18,6 +22,12 @@ public partial class Aldeão : Node
 		CartaVirada = GetNode<TextureButton>("Carta Virada");
 		AcoesClasse = GetNode<VBoxContainer>("Carta Desvirada/Margem da Carta/Sumário da Carta/Descrição da Carta/Ações da Carta");
 		ClaNaCarta = GetNode<Label>("Carta Desvirada/Margem da Carta/Sumário da Carta/Clã da Carta");
+
+		if (GetParent() is Jogo)
+		{
+			ControladorJogo = GetParent() as Jogo;
+			JogadoresNoJogo = ControladorJogo.Jogadores;
+		}
 
 
 		foreach (MarginContainer Acao in AcoesClasse.GetChildren())
@@ -75,6 +85,13 @@ public partial class Aldeão : Node
 		(GetChild(1) as Control).Visible = false;
 	}
 
+	private void MatarJogador(Jogador assassino, Jogador vitima)
+	{
+		GD.Print($"Assassino: {assassino.NomeJogador}");
+		GD.Print($"Vitima: {vitima.NomeJogador}");
+		JogadoresNoJogo.Remove(vitima);
+	}
+
 	private void OnAcaoButtonUp(Button acaoApertada)
 	{
 		switch (acaoApertada.Name)
@@ -83,6 +100,17 @@ public partial class Aldeão : Node
 				PassarTurno();
 				break;
 
+			case "Matar Jogador":
+				PopupJogadoresNoJogo popupEscolhaJogador = CenaEscolhaJogador.Instantiate<PopupJogadoresNoJogo>();
+				popupEscolhaJogador.JogadorDescartadoNaListagem = JogadorUsuario;
+        		AddChild(popupEscolhaJogador);
+
+				popupEscolhaJogador.JogadorFoiSelecionado += (int jogadorSelecionadoIndex) =>
+				{
+					MatarJogador(JogadorUsuario, JogadoresNoJogo[jogadorSelecionadoIndex]);
+					popupEscolhaJogador.QueueFree();
+				};
+				break;
 		}
 	}
 }

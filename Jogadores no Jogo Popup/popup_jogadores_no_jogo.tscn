@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://ch1ry2frmiio2"]
+
+[ext_resource type="Script" uid="uid://c2rrbpyy1cbba" path="res://Jogadores no Jogo Popup/PopupJogadoresNoJogo.cs" id="1_8odom"]
+
+[node name="PopupJogadoresNoJogo" type="PopupPanel"]
+auto_translate_mode = 1
+visible = true
+script = ExtResource("1_8odom")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 96.0
+offset_bottom = 96.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
