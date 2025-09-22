@@ -13,6 +13,7 @@ public partial class Aldeão : Node
 	public string ClaClasse;
 	public Jogo ControladorJogo;
 	public List<Jogador> JogadoresNoJogo;
+	public List<Jogador> JogadoresNoJogoMortos;
 	public PackedScene CenaEscolhaJogador = GD.Load<PackedScene>("res://Jogadores no Jogo Popup/popup_jogadores_no_jogo.tscn");
 	private TextureButton CartaVirada;
 	private VBoxContainer AcoesClasse;
@@ -27,6 +28,7 @@ public partial class Aldeão : Node
 		{
 			ControladorJogo = GetParent() as Jogo;
 			JogadoresNoJogo = ControladorJogo.Jogadores;
+			JogadoresNoJogoMortos = ControladorJogo.JogadoresMortos;
 		}
 
 
@@ -87,9 +89,12 @@ public partial class Aldeão : Node
 
 	private void MatarJogador(Jogador assassino, Jogador vitima)
 	{
-		GD.Print($"Assassino: {assassino.NomeJogador}");
-		GD.Print($"Vitima: {vitima.NomeJogador}");
+		/*GD.Print($"Assassino: {assassino.NomeJogador}");
+		GD.Print($"Vitima: {vitima.NomeJogador}");*/
+		
+		JogadoresNoJogoMortos.Add(vitima);
 		JogadoresNoJogo.Remove(vitima);
+		PassarTurno();
 	}
 
 	private void OnAcaoButtonUp(Button acaoApertada)

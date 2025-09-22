@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://csftoubb84rkh"]
+
+[ext_resource type="Texture2D" uid="uid://bcpiokvjosvh4" path="res://Sprites/advance_button.png" id="1_twlcf"]
+
+[node name="Botão Avancar Módulo" type="TextureButton"]
+anchors_preset = -1
+anchor_left = 0.439
+anchor_top = 0.64
+anchor_right = 0.529
+anchor_bottom = 0.809
+offset_left = 0.271973
+offset_top = 0.279968
+offset_right = 1.59192
+offset_bottom = -4.23199
+grow_vertical = 2
+texture_normal = ExtResource("1_twlcf")
+ignore_texture_size = true
+stretch_mode = 0
